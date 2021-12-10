@@ -19,7 +19,7 @@ Main dependencies:
 
 Node, TypeScript and TSLint should be installed globally.
 
-    $> git clone https://github.com/yahiko00/PixiProject.git <new folder>
+    $> git clone https://github.com/Grindheadhead/Reels.git <new folder>
     $> cd <new folder>
     $> git init
     $> yarn install
