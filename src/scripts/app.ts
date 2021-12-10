@@ -3,9 +3,7 @@ import Engine from './Engine';
 import { GAME_HEIGHT, GAME_WIDTH } from './Utils/Constants';
 
 const stats = new Stats();
-/**
- * This comment _supports_ [Markdown](https://marked.js.org/)
- */
+
 window.onload = () => {
   const engine = new Engine({
     containerId: 'game',

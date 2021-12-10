@@ -13,9 +13,6 @@ interface EngineParams {
   fpsMax: number;
 }
 
-/**
- * This comment _supports_ [Markdown](https://marked.js.org/)
- */
 export default class Engine {
   container: HTMLElement;
   loader: PIXI.Loader;
