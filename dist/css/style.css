@@ -1,0 +1,24 @@
+body {
+  background-color: #000000;
+  margin: 0;
+}
+
+canvas {
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+#game {
+  text-align: center;
+}
+
+div#stats {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 500;
+  width: max(200px, 10vw, 10vh);
+  height: max(100px, 6vh, 6vw);
+  opacity: 0.8;
+  user-select: none;
+}

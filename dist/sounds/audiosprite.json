@@ -1,0 +1,16 @@
+{
+  "src": [
+    "sounds/audiosprite.ogg",
+    "sounds/audiosprite.m4a",
+    "sounds/audiosprite.mp3",
+    "sounds/audiosprite.ac3"
+  ],
+  "sprite": {
+    "Reel_Stop_1": [0, 405.98639455782313],
+    "Reel_Stop_2": [2000, 474.58049886621325],
+    "Reel_Stop_3": [4000, 485.1020408163267],
+    "Reel_Stop_4": [6000, 432.6984126984126],
+    "Reel_Stop_5": [8000, 381.76870748299405],
+    "Start_Button": [10000, 433.8548752834459]
+  }
+}
