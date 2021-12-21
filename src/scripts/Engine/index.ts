@@ -3,8 +3,14 @@ import { Howl, HowlCallback } from 'howler';
 import * as AudioData from '../../sounds/audiosprite.json';
 import UI from '../UI';
 import Reel from '../Reel';
-import { GAME_WIDTH, NUM_REELS, SYMBOL_HEIGHT } from '../Utils/Constants';
+import {
+  EVENTS,
+  GAME_WIDTH,
+  NUM_REELS,
+  SYMBOL_HEIGHT,
+} from '../Utils/Constants';
 import ReelMask from '../Reel/ReelMask';
+import { globalEvent } from '@billjs/event-emitter';
 
 interface EngineParams {
   containerId: string;
@@ -91,8 +97,10 @@ export default class Engine {
 
   startSpin = () => {
     this.reelList.forEach((reel: Reel, index: number) => {
-      reel.startSpin(index, this.spinComplete);
+      reel.startSpin(index);
     });
+
+    globalEvent.on(EVENTS.SPIN_COMPLETE, this.spinComplete);
 
     this.reelSpinCtr = 0;
   };
@@ -101,6 +109,7 @@ export default class Engine {
     this.reelSpinCtr += 1;
 
     if (this.reelSpinCtr === NUM_REELS) {
+      globalEvent.offAll();
       this.ui?.activate();
     }
   };
