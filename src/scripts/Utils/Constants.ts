@@ -17,7 +17,7 @@ export const SPIN_SPEED: number = 30;
 export const NUM_REEL_STOP_SOUNDS: number = 5;
 
 export const FEATURES = {
-  CASCADING_REELS: false,
+  CASCADING_REELS: true,
 };
 
 export const EVENTS = {
