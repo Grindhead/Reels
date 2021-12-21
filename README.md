@@ -5,8 +5,6 @@ Main features:
 - Unit tests
 - Browser Hot Reload
 
-## PLEASE NOTE THIS PROJECT HAS BEEN DEVELOPED FOR LANDSCAPE VIEW FOR AN IPAD AND ABOVE.
-
 Main dependencies:
 
 - **Application Server**: [Node](https://nodejs.org/en/)
