@@ -7,11 +7,11 @@ export const getImageData = (key: string) => {
 };
 
 export const getRandomSymbol = () => {
-  const id = Math.floor(Math.random() * (NUM_UNIQUE_SYMBOLS - 1 + 1) + 1);
+  const id = Math.floor(Math.random() * NUM_UNIQUE_SYMBOLS + 1);
   return 'symbols/symbol_' + id + '.png';
 };
 
 export const getRandomStopSound = () => {
-  const id = Math.floor(Math.random() * (NUM_REEL_STOP_SOUNDS - 1 + 1) + 1);
+  const id = Math.floor(Math.random() * NUM_REEL_STOP_SOUNDS + 1);
   return 'Reel_Stop_' + id;
 };
