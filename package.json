@@ -32,6 +32,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "@billjs/event-emitter": "^1.0.3",
     "gsap": "^3.8.0",
     "howler": "^2.2.3",
     "lodash": "^4.17.21",
