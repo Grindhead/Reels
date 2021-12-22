@@ -97,7 +97,7 @@ export default class Engine {
 
   startSpin = () => {
     this.reelList.forEach((reel: Reel, index: number) => {
-      reel.startSpin(index);
+      reel.startSpin(index * 0.1);
     });
 
     globalEvent.on(EVENTS.SPIN_COMPLETE, this.spinComplete);

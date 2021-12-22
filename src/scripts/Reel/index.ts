@@ -48,7 +48,7 @@ export default class Reel extends PIXI.Container {
     timeline.to(this, {
       yVel: SPIN_SPEED,
       duration: SPIN_START,
-      delay: delay * 0.2,
+      delay,
     });
 
     timeline.to(this, {
