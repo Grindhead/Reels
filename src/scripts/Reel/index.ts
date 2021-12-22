@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import {
   EVENTS,
   FEATURES,
+  GAME_HEIGHT,
   NUM_SYMBOLS_TO_SHOW,
   SPIN_DURATION,
   SPIN_END,
@@ -43,6 +44,15 @@ export default class Reel extends PIXI.Container {
   startSpin = (delay: number) => {
     this.engine.audio.play('Start_Button');
     this.isSpinning = true;
+
+    if (FEATURES.CASCADING_REELS) {
+      this.cascadeSpin(delay);
+    } else {
+      this.normalSpin(delay);
+    }
+  };
+
+  normalSpin = (delay: number) => {
     var timeline = gsap.timeline();
 
     timeline.to(this, {
@@ -56,14 +66,33 @@ export default class Reel extends PIXI.Container {
       onComplete: () => {
         this.isSpinning = false;
         this.symbolList = orderBy(this.symbolList, ['y']);
-
-        if (FEATURES.CASCADING_REELS) {
-          return;
-        }
-
         this.symbolList.forEach((symbol, index) =>
           this.animateOut(symbol, index),
         );
+      },
+    });
+  };
+
+  cascadeSpin = (delay: number) => {
+    var timeline = gsap.timeline();
+
+    timeline.to(this, {
+      delay,
+      onComplete: () => {
+        this.symbolList = orderBy(this.symbolList, ['y']);
+        this.isSpinning = false;
+        this.symbolList.forEach((symbol, index) => {
+          gsap.to(symbol, {
+            duration: SPIN_END,
+            y: GAME_HEIGHT + SYMBOL_HEIGHT,
+            angle: _.random(-360, 360),
+            ease: Power1.easeInOut,
+            onComplete: () => {
+              symbol.y = -SYMBOL_HEIGHT;
+              this.animateOut(symbol, index);
+            },
+          });
+        });
       },
     });
   };
@@ -82,20 +111,6 @@ export default class Reel extends PIXI.Container {
         this.resetSymbol(symbol);
       }
     });
-
-    if (FEATURES.CASCADING_REELS) {
-      const isAnimationFinished = this.symbolList.every((sprite) => {
-        return sprite.y === -SYMBOL_HEIGHT * 2;
-      });
-
-      if (isAnimationFinished) {
-        this.yVel = 0;
-
-        _.forEachRight(this.symbolList, (symbol: PIXI.Sprite, index: number) =>
-          this.animateOut(symbol, index),
-        );
-      }
-    }
   };
 
   animateOut = (symbol: PIXI.Sprite, index: number) => {
@@ -129,7 +144,7 @@ export default class Reel extends PIXI.Container {
 
   resetSymbol = (symbol: PIXI.Sprite) => {
     if (FEATURES.CASCADING_REELS && !this.isSpinning) {
-      symbol.y = -symbol.height * 2;
+      symbol.y = -SYMBOL_HEIGHT * 2;
     } else {
       symbol.y -= NUM_SYMBOLS_TO_SHOW * SYMBOL_HEIGHT + symbol.height;
     }
