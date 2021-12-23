@@ -12,10 +12,6 @@ window.onload = () => {
     fpsMax: 60,
   });
 
-  if (screen.orientation.lock) {
-    screen.orientation.lock('landscape');
-  }
-
   const render = () => {
     requestAnimationFrame(render);
     stats.begin();
