@@ -13,24 +13,72 @@ import ReelMask from '../Reel/ReelMask';
 import { globalEvent } from '@billjs/event-emitter';
 
 interface EngineParams {
+  /**
+   * @param {string} containerId - The div id to render the canvas object into
+   */
   containerId: string;
+
+  /**
+   * @param {number} canvasW - The width of the rendered canvas
+   */
   canvasW: number;
+
+  /**
+   * @property {number} canvasH - The height of the rendered canvas
+   */
   canvasH: number;
-  fpsMax: number;
 }
 
 export default class Engine {
+  /**
+   * @property {HTMLElement} container - The container {HTMLElement} of the canvas element
+   */
   container: HTMLElement;
+
+  /**
+   * @property {PIXI.Loader} loader - A reference to the global {PIXI.Loader} object
+   */
   loader: PIXI.Loader;
+
+  /**
+   * @property {PIXI.Renderer} renderer - A reference to the {PIXI.Renderer} object
+   */
   renderer: PIXI.Renderer;
+
+  /**
+   * @property {PIXI.Container} stage - A reference to the top level display container
+   */
   stage: PIXI.Container;
+
+  /**
+   * @property {PIXI.Graphics} graphics - A reference to the top level graphics container
+   */
   graphics: PIXI.Graphics;
-  fpsMax: number;
+
+  /**
+   * @property {Howl} audio - A reference to the audio library Howl
+   */
   audio!: Howl;
+
+  /**
+   * @property {number} reelSpinCtr - A int for how many times the reels have spun
+   */
   reelSpinCtr: number = 0;
+
+  /**
+   * @property {UI} reelSpinCtr - A reference to the game UI object
+   */
   ui?: UI;
+
+  /**
+   * @property { Reel[]} reelList - An array that contains all the active reels
+   */
   reelList: Reel[] = [];
 
+  /**
+   * @constructor
+   * @param {EngineParams} params - Parameters used by the Engine class
+   */
   constructor(params: EngineParams) {
     this.loader = PIXI.Loader.shared;
 
@@ -42,7 +90,6 @@ export default class Engine {
 
     this.stage = new PIXI.Container();
     this.graphics = new PIXI.Graphics();
-    this.fpsMax = params.fpsMax;
 
     this.container = params.containerId
       ? document.getElementById(params.containerId) || document.body
@@ -52,29 +99,32 @@ export default class Engine {
     this.loadTextureAtlas();
   }
 
-  loadTextureAtlas = () => {
+  private loadTextureAtlas = () => {
     this.loader.add('atlas', 'images/atlas.json');
     this.loader.load(() => {
       this.loadAudiosprite(AudioData, this.displayGame);
     });
   };
 
-  loadAudiosprite = (audiospriteData: Object, onLoad: HowlCallback) => {
+  /**
+   * @param {Object} audiospriteData - a JSON file exported from Audiosprite that defines the Audiosprite file locations and markers within the files.
+   * MP3, ogg, m4a and ac3 are normally loaded
+   * @callback {HowlCallback} onLoad - a method to call once audio loading has been completed
+   */
+  private loadAudiosprite = (audiospriteData: Object, onLoad: HowlCallback) => {
     this.audio = new Howl(audiospriteData);
     this.audio.once('load', onLoad);
   };
 
-  displayGame = () => {
-    this.createReels();
-    this.createUI();
-  };
+  private createUI = () => {
+    this.ui = new UI(this.stage);
 
-  createUI = () => {
-    this.ui = new UI(this.startSpin, this.stage);
+    globalEvent.on(EVENTS.SPIN_START, this.startSpin);
+
     this.stage.addChild(this.ui);
   };
 
-  createReels = () => {
+  private createReels = () => {
     let reel;
 
     for (let i = 0; i < NUM_REELS; i++) {
@@ -87,6 +137,11 @@ export default class Engine {
     const scale: number = GAME_WIDTH / this.stage.width;
     this.stage.scale.set(scale);
     new ReelMask(scale * SYMBOL_HEIGHT, this.reelList);
+  };
+
+  private displayGame = () => {
+    this.createReels();
+    this.createUI();
   };
 
   update = () => {
@@ -105,12 +160,12 @@ export default class Engine {
     this.reelSpinCtr = 0;
   };
 
-  spinComplete = () => {
+  private spinComplete = () => {
     this.reelSpinCtr += 1;
-
     if (this.reelSpinCtr === NUM_REELS) {
       globalEvent.offAll();
       this.ui?.activate();
+      globalEvent.on(EVENTS.SPIN_START, this.startSpin);
     }
   };
 }

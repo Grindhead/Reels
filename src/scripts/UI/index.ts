@@ -5,18 +5,33 @@ import {
   SYMBOL_HEIGHT,
   SYMBOL_WIDTH,
 } from '../Utils/Constants';
+import { EVENTS } from '../Utils/Constants';
 import { getImageData } from '../Utils/Utils';
+import { globalEvent } from '@billjs/event-emitter';
 
 export default class UI extends PIXI.Container {
+  /**
+   * @param {PIXI.Sprite} spinButton - A reference to the spin button
+   */
   spinButton: PIXI.Sprite;
+
+  /**
+   * @param {boolean} isEnabled - Can the UI be used? Disabled if the reels are spinning
+   */
   isEnabled: boolean = true;
-  spinCallback: Function;
+
+  /**
+   * @param {object} mousePos - Stores mouse pos. This will be deprecated
+   */
   mousePos = { x: 0, y: 0 };
 
-  constructor(spinCallback: Function, stage: PIXI.Container) {
+  /**
+   * @constructor
+   * @param {PIXI.Container} stage - a reference to the stage object
+   */
+  constructor(stage: PIXI.Container) {
     super();
 
-    this.spinCallback = spinCallback;
     this.spinButton = this.createSpinButton();
 
     this.activate();
@@ -28,7 +43,7 @@ export default class UI extends PIXI.Container {
     });
   }
 
-  activate = () => {
+  public activate = () => {
     this.isEnabled = true;
     this.spinButton.interactive = true;
     this.spinButton.buttonMode = true;
@@ -45,12 +60,15 @@ export default class UI extends PIXI.Container {
     }
   };
 
-  disable = () => {
+  private disable = () => {
     this.isEnabled = false;
     this.spinButton.buttonMode = false;
     this.spinButton.interactive = false;
   };
 
+  /**
+   * @return {PIXI.Sprite} - a new spin button with events applied
+   */
   private createSpinButton = () => {
     const button: PIXI.Sprite = new PIXI.Sprite(
       getImageData('ui/btn_spin_normal.png'),
@@ -65,7 +83,8 @@ export default class UI extends PIXI.Container {
     button.on('pointerup', () => {
       button.texture = getImageData('ui/btn_spin_disabled.png');
       this.disable();
-      this.spinCallback(this);
+
+      globalEvent.fire(EVENTS.SPIN_START);
     });
 
     button.on('pointerover', () => {

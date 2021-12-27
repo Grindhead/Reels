@@ -21,5 +21,6 @@ export const FEATURES = {
 };
 
 export const EVENTS = {
+  SPIN_START: 'spin-start',
   SPIN_COMPLETE: 'spin-complete',
 };

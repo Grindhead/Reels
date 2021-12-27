@@ -9,7 +9,6 @@ window.onload = () => {
     containerId: 'game',
     canvasW: GAME_WIDTH,
     canvasH: GAME_HEIGHT,
-    fpsMax: 60,
   });
 
   const render = () => {
