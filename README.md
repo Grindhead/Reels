@@ -45,3 +45,5 @@ Sounds are generated using [Audiosprite](https://www.npmjs.com/package/audiospri
 ## Licence
 
 MIT
+
+With thanks to https://github.com/yahiko00/PixiProject.git for the boilerplate
