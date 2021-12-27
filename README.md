@@ -30,7 +30,7 @@ The following command builds and run the project in development mode with Hot Re
 
     $> yarn serve
 
-The following command builds the project in production mode.
+The following command builds the project in production mode. Project will output into a dist folder
 
     $> yarn build
 
