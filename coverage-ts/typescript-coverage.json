@@ -1,0 +1,107 @@
+{
+  "fileCounts": {},
+  "anys": [
+    {
+      "file": "src\\scripts\\Utils\\Utils.ts",
+      "line": 8,
+      "character": 8,
+      "text": "atlasData",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\Utils\\Utils.ts",
+      "line": 9,
+      "character": 9,
+      "text": "atlasData",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\Utils\\Utils.ts",
+      "line": 9,
+      "character": 19,
+      "text": "textures",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 39,
+      "character": 29,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 40,
+      "character": 24,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 40,
+      "character": 26,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 40,
+      "character": 31,
+      "text": "global",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 40,
+      "character": 38,
+      "text": "x",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 41,
+      "character": 24,
+      "text": "e",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 41,
+      "character": 26,
+      "text": "data",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 41,
+      "character": 31,
+      "text": "global",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\UI\\index.ts",
+      "line": 41,
+      "character": 38,
+      "text": "y",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\Engine\\index.ts",
+      "line": 127,
+      "character": 8,
+      "text": "reel",
+      "kind": 1
+    },
+    {
+      "file": "src\\scripts\\Engine\\index.ts",
+      "line": 130,
+      "character": 6,
+      "text": "reel",
+      "kind": 1
+    }
+  ],
+  "percentage": 98.06896551724138,
+  "total": 725,
+  "covered": 711,
+  "uncovered": 14
+}

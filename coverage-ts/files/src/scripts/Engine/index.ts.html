@@ -1,0 +1,189 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>index.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="..\..\..\..\assets\source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="..\..\..\..\assets\source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="..\..\..\..\index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src\scripts\Engine\index.ts</td><td class="">99.05%</td><td class="">80%</td><td class="">211</td><td class="">209</td><td class="">2</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as PIXI from &#x27;pixi.js&#x27;;
+import { Howl, HowlCallback } from &#x27;howler&#x27;;
+import * as AudioData from &#x27;../../sounds/audiosprite.json&#x27;;
+import UI from &#x27;../UI&#x27;;
+import Reel from &#x27;../Reel&#x27;;
+import {
+  EVENTS,
+  GAME_WIDTH,
+  NUM_REELS,
+  SYMBOL_HEIGHT,
+} from &#x27;../Utils/Constants&#x27;;
+import ReelMask from &#x27;../Reel/ReelMask&#x27;;
+import { globalEvent } from &#x27;@billjs/event-emitter&#x27;;
+
+interface EngineParams {
+  /**
+   * @param {string} containerId - The div id to render the canvas object into
+   */
+  containerId: string;
+
+  /**
+   * @param {number} canvasW - The width of the rendered canvas
+   */
+  canvasW: number;
+
+  /**
+   * @property {number} canvasH - The height of the rendered canvas
+   */
+  canvasH: number;
+}
+
+export default class Engine {
+  /**
+   * @property {HTMLElement} container - The container {HTMLElement} of the canvas element
+   */
+  container: HTMLElement;
+
+  /**
+   * @property {PIXI.Loader} loader - A reference to the global {PIXI.Loader} object
+   */
+  loader: PIXI.Loader;
+
+  /**
+   * @property {PIXI.Renderer} renderer - A reference to the {PIXI.Renderer} object
+   */
+  renderer: PIXI.Renderer;
+
+  /**
+   * @property {PIXI.Container} stage - A reference to the top level display container
+   */
+  stage: PIXI.Container;
+
+  /**
+   * @property {PIXI.Graphics} graphics - A reference to the top level graphics container
+   */
+  graphics: PIXI.Graphics;
+
+  /**
+   * @property {Howl} audio - A reference to the audio library Howl
+   */
+  audio!: Howl;
+
+  /**
+   * @property {number} reelSpinCtr - A int for how many times the reels have spun
+   */
+  reelSpinCtr: number = 0;
+
+  /**
+   * @property {UI} reelSpinCtr - A reference to the game UI object
+   */
+  ui?: UI;
+
+  /**
+   * @property { Reel[]} reelList - An array that contains all the active reels
+   */
+  reelList: Reel[] = [];
+
+  /**
+   * @constructor
+   * @param {EngineParams} params - Parameters used by the Engine class
+   */
+  constructor(params: EngineParams) {
+    this.loader = PIXI.Loader.shared;
+
+    this.renderer = PIXI.autoDetectRenderer({
+      width: params.canvasW,
+      height: params.canvasH,
+      antialias: true,
+    });
+
+    this.stage = new PIXI.Container();
+    this.graphics = new PIXI.Graphics();
+
+    this.container = params.containerId
+      ? document.getElementById(params.containerId) || document.body
+      : document.body;
+    this.container.appendChild(this.renderer.view);
+
+    this.loadTextureAtlas();
+  }
+
+  private loadTextureAtlas = () =&gt; {
+    this.loader.add(&#x27;atlas&#x27;, &#x27;images/atlas.json&#x27;);
+    this.loader.load(() =&gt; {
+      this.loadAudiosprite(AudioData, this.displayGame);
+    });
+  };
+
+  /**
+   * @param {Object} audiospriteData - a JSON file exported from Audiosprite that defines the Audiosprite file locations and markers within the files.
+   * MP3, ogg, m4a and ac3 are normally loaded
+   * @callback {HowlCallback} onLoad - a method to call once audio loading has been completed
+   */
+  private loadAudiosprite = (audiospriteData: Object, onLoad: HowlCallback) =&gt; {
+    this.audio = new Howl(audiospriteData);
+    this.audio.once(&#x27;load&#x27;, onLoad);
+  };
+
+  private createUI = () =&gt; {
+    this.ui = new UI(this.stage);
+
+    globalEvent.on(EVENTS.SPIN_START, this.startSpin);
+
+    this.stage.addChild(this.ui);
+  };
+
+  private createReels = () =&gt; {
+    let reel;
+
+    for (let i = 0; i &lt; NUM_REELS; i++) {
+      reel = new Reel(this);
+      this.reelList.push(reel);
+      reel.x = i * reel.width;
+      this.stage.addChild(reel);
+    }
+
+    const scale: number = GAME_WIDTH / this.stage.width;
+    this.stage.scale.set(scale);
+    new ReelMask(scale * SYMBOL_HEIGHT, this.reelList);
+  };
+
+  private displayGame = () =&gt; {
+    this.createReels();
+    this.createUI();
+  };
+
+  update = () =&gt; {
+    this.reelList.forEach((reel: Reel) =&gt; {
+      reel.update();
+    });
+  };
+
+  startSpin = () =&gt; {
+    this.reelList.forEach((reel: Reel, index: number) =&gt; {
+      reel.startSpin(index * 0.1);
+    });
+
+    globalEvent.on(EVENTS.SPIN_COMPLETE, this.spinComplete);
+
+    this.reelSpinCtr = 0;
+  };
+
+  private spinComplete = () =&gt; {
+    this.reelSpinCtr += 1;
+    if (this.reelSpinCtr === NUM_REELS) {
+      globalEvent.offAll();
+      this.ui?.activate();
+      globalEvent.on(EVENTS.SPIN_START, this.startSpin);
+    }
+  };
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src\\scripts\\Engine\\index.ts&quot;,&quot;line&quot;:127,&quot;character&quot;:8,&quot;text&quot;:&quot;reel&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\Engine\\index.ts&quot;,&quot;line&quot;:130,&quot;character&quot;:6,&quot;text&quot;:&quot;reel&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 28 Dec 2021 00:18:32 GMT</p>
+    </body>
+  </html>
+  

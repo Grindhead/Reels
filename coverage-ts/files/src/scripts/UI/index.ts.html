@@ -1,0 +1,123 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>index.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="..\..\..\..\assets\source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="..\..\..\..\assets\source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="..\..\..\..\index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src\scripts\UI\index.ts</td><td class="">93.23%</td><td class="">80%</td><td class="">133</td><td class="">124</td><td class="">9</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as PIXI from &#x27;pixi.js&#x27;;
+import {
+  NUM_REELS,
+  NUM_SYMBOLS_TO_SHOW,
+  SYMBOL_HEIGHT,
+  SYMBOL_WIDTH,
+} from &#x27;../Utils/Constants&#x27;;
+import { EVENTS } from &#x27;../Utils/Constants&#x27;;
+import { getImageData } from &#x27;../Utils/Utils&#x27;;
+import { globalEvent } from &#x27;@billjs/event-emitter&#x27;;
+
+export default class UI extends PIXI.Container {
+  /**
+   * @param {PIXI.Sprite} spinButton - A reference to the spin button
+   */
+  spinButton: PIXI.Sprite;
+
+  /**
+   * @param {boolean} isEnabled - Can the UI be used? Disabled if the reels are spinning
+   */
+  isEnabled: boolean = true;
+
+  /**
+   * @param {object} mousePos - Stores mouse pos. This will be deprecated
+   */
+  mousePos = { x: 0, y: 0 };
+
+  /**
+   * @constructor
+   * @param {PIXI.Container} stage - a reference to the stage object
+   */
+  constructor(stage: PIXI.Container) {
+    super();
+
+    this.spinButton = this.createSpinButton();
+
+    this.activate();
+
+    stage.interactive = true;
+    stage.on(&#x27;pointermove&#x27;, (e: any) =&gt; {
+      this.mousePos.x = e.data.global.x;
+      this.mousePos.y = e.data.global.y;
+    });
+  }
+
+  public activate = () =&gt; {
+    this.isEnabled = true;
+    this.spinButton.interactive = true;
+    this.spinButton.buttonMode = true;
+    this.spinButton.texture = getImageData(&#x27;ui/btn_spin_normal.png&#x27;);
+
+    // This is dirty and disgusting and will get updated
+    if (
+      this.mousePos.x &gt;= 841 &amp;&amp;
+      this.mousePos.x &lt;= 1020 &amp;&amp;
+      this.mousePos.y &gt;= 605 &amp;&amp;
+      this.mousePos.y &lt;= 770
+    ) {
+      this.spinButton.texture = getImageData(&#x27;ui/btn_spin_hover.png&#x27;);
+    }
+  };
+
+  private disable = () =&gt; {
+    this.isEnabled = false;
+    this.spinButton.buttonMode = false;
+    this.spinButton.interactive = false;
+  };
+
+  /**
+   * @return {PIXI.Sprite} - a new spin button with events applied
+   */
+  private createSpinButton = () =&gt; {
+    const button: PIXI.Sprite = new PIXI.Sprite(
+      getImageData(&#x27;ui/btn_spin_normal.png&#x27;),
+    );
+
+    this.addChild(button);
+
+    button.on(&#x27;pointerdown&#x27;, () =&gt; {
+      button.texture = getImageData(&#x27;ui/btn_spin_pressed.png&#x27;);
+    });
+
+    button.on(&#x27;pointerup&#x27;, () =&gt; {
+      button.texture = getImageData(&#x27;ui/btn_spin_disabled.png&#x27;);
+      this.disable();
+
+      globalEvent.fire(EVENTS.SPIN_START);
+    });
+
+    button.on(&#x27;pointerover&#x27;, () =&gt; {
+      button.texture = getImageData(&#x27;ui/btn_spin_hover.png&#x27;);
+    });
+
+    button.on(&#x27;pointerout&#x27;, () =&gt; {
+      button.texture = getImageData(&#x27;ui/btn_spin_normal.png&#x27;);
+    });
+
+    const padding = 20;
+
+    button.x = NUM_REELS * SYMBOL_WIDTH - SYMBOL_WIDTH + padding;
+    button.y = NUM_SYMBOLS_TO_SHOW * SYMBOL_HEIGHT + padding;
+
+    return button;
+  };
+}
+</textarea><pre id="annotations" style="display:none">[{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:39,&quot;character&quot;:29,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:24,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:26,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:31,&quot;text&quot;:&quot;global&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:40,&quot;character&quot;:38,&quot;text&quot;:&quot;x&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:24,&quot;text&quot;:&quot;e&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:26,&quot;text&quot;:&quot;data&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:31,&quot;text&quot;:&quot;global&quot;,&quot;kind&quot;:1},{&quot;file&quot;:&quot;src\\scripts\\UI\\index.ts&quot;,&quot;line&quot;:41,&quot;character&quot;:38,&quot;text&quot;:&quot;y&quot;,&quot;kind&quot;:1}]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 28 Dec 2021 00:18:32 GMT</p>
+    </body>
+  </html>
+  

@@ -14,7 +14,7 @@ import { getImageData, getRandomStopSound } from '../Utils/Utils';
 import { gsap, Power1 } from 'gsap';
 import _, { orderBy } from 'lodash';
 import { getRandomSymbol } from '../Utils/Utils';
-import Engine from '../Engine';
+import { Engine } from '../Engine';
 import { globalEvent } from '@billjs/event-emitter';
 
 export default class Reel extends PIXI.Container {
@@ -28,22 +28,15 @@ export default class Reel extends PIXI.Container {
   yVel: number = 0;
 
   /**
-   * @param {Engine} engine - a reference to the game engine
-   */
-  engine: Engine;
-
-  /**
    * @param {boolean} iSpinning - determines if the reels are currently spinning
    */
   isSpinning: boolean = false;
 
   /**
    * @constructor
-   * @param {Engine} engine - a reference to the game engine
    */
-  constructor(engine: Engine) {
+  constructor() {
     super();
-    this.engine = engine;
     this.createSymbols();
   }
 
@@ -134,7 +127,7 @@ export default class Reel extends PIXI.Container {
       delay,
       ease,
       onComplete: () => {
-        this.engine.audio.play(getRandomStopSound());
+        Engine.audio.play(getRandomStopSound());
         if (index === 0) {
           anim.then(() => globalEvent.fire(EVENTS.SPIN_COMPLETE));
         }
@@ -175,7 +168,7 @@ export default class Reel extends PIXI.Container {
    * @param {number} delay - the delay before the reels begin to spin
    */
   public startSpin = (delay: number) => {
-    this.engine.audio.play('Start_Button');
+    Engine.audio.play('Start_Button');
     this.isSpinning = true;
 
     if (FEATURES.CASCADING_REELS) {

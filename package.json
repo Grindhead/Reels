@@ -8,7 +8,8 @@
     "server": "yarn serve",
     "dev": "yarn serve",
     "test": "mocha tests",
-    "docs": "typedoc ./src/scripts/app.ts ./src/scripts/Engine/index.ts ./src/scripts/Reel/index.ts ./src/scripts/Reel/ReelMask.ts ./src/scripts/UI/index.ts ./src/scripts/Utils/Constants.ts ./src/scripts/Utils/Utils.ts --out docs && http-server docs -o"
+    "docs": "typedoc ./src/scripts/app.ts ./src/scripts/Engine/index.ts ./src/scripts/Reel/index.ts ./src/scripts/Reel/ReelMask.ts ./src/scripts/UI/index.ts ./src/scripts/Utils/Constants.ts ./src/scripts/Utils/Utils.ts --out docs && http-server docs -o",
+    "ts-coverage": "typescript-coverage-report && http-server coverage-ts -o"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
     "ts-loader": "^6.2.2",
     "typedoc": "^0.22.10",
     "typescript": "^4.5.3",
+    "typescript-coverage-report": "^0.6.1",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"

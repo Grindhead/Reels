@@ -8,6 +8,7 @@ import {
 import { EVENTS } from '../Utils/Constants';
 import { getImageData } from '../Utils/Utils';
 import { globalEvent } from '@billjs/event-emitter';
+import { Engine } from '../Engine';
 
 export default class UI extends PIXI.Container {
   /**
@@ -29,18 +30,20 @@ export default class UI extends PIXI.Container {
    * @constructor
    * @param {PIXI.Container} stage - a reference to the stage object
    */
-  constructor(stage: PIXI.Container) {
+  constructor() {
     super();
 
     this.spinButton = this.createSpinButton();
 
     this.activate();
 
-    stage.interactive = true;
-    stage.on('pointermove', (e: any) => {
+    Engine.stage.interactive = true;
+    Engine.stage.on('pointermove', (e: any) => {
       this.mousePos.x = e.data.global.x;
       this.mousePos.y = e.data.global.y;
     });
+
+    Engine.stage.addChild(this);
   }
 
   public activate = () => {

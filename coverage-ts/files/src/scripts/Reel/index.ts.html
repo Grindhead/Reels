@@ -1,0 +1,205 @@
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>index.ts</title>
+      <link href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" type="text/css" rel="stylesheet">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/mode/javascript/javascript.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.2/codemirror.min.css" type="text/css" rel="stylesheet">
+<script src="..\..\..\..\assets\source-file.js" type="text/javascript" charset="utf-8"></script>
+<link href="..\..\..\..\assets\source-file.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
+    <div style="margin-top:3em" class="ui container"><h1 class="ui header"><a href="..\..\..\..\index.html">TypeScript coverage report</a></h1><table style="margin-top:2em" class="ui celled table"><thead class=""><tr class=""><th class="">Filename</th><th class="">Percent</th><th class="">Threshold</th><th class="">Total</th><th class="">Covered</th><th class="">Uncovered</th></tr></thead><tbody class=""><tr class="positive"><td class="">src\scripts\Reel\index.ts</td><td class="">100.00%</td><td class="">80%</td><td class="">268</td><td class="">268</td><td class="">0</td></tr></tbody></table><textarea id="editor" readonly="" style="margin-top:3em">import * as PIXI from &#x27;pixi.js&#x27;;
+import {
+  EVENTS,
+  FEATURES,
+  GAME_HEIGHT,
+  NUM_SYMBOLS_TO_SHOW,
+  SPIN_DURATION,
+  SPIN_END,
+  SPIN_SPEED,
+  SPIN_START,
+  SYMBOL_HEIGHT,
+} from &#x27;../Utils/Constants&#x27;;
+import { getImageData, getRandomStopSound } from &#x27;../Utils/Utils&#x27;;
+import { gsap, Power1 } from &#x27;gsap&#x27;;
+import _, { orderBy } from &#x27;lodash&#x27;;
+import { getRandomSymbol } from &#x27;../Utils/Utils&#x27;;
+import Engine from &#x27;../Engine&#x27;;
+import { globalEvent } from &#x27;@billjs/event-emitter&#x27;;
+
+export default class Reel extends PIXI.Container {
+  /**
+   * @param {PIXI.Sprite[]} symbolList - An array of all the current displayed symbols in this vertical column
+   */
+  symbolList: PIXI.Sprite[] = [];
+  /**
+   * @param {number} yVel - the speed at which the reels will move
+   */
+  yVel: number = 0;
+
+  /**
+   * @param {Engine} engine - a reference to the game engine
+   */
+  engine: Engine;
+
+  /**
+   * @param {boolean} iSpinning - determines if the reels are currently spinning
+   */
+  isSpinning: boolean = false;
+
+  /**
+   * @constructor
+   * @param {Engine} engine - a reference to the game engine
+   */
+  constructor(engine: Engine) {
+    super();
+    this.engine = engine;
+    this.createSymbols();
+  }
+
+  private createSymbols = () =&gt; {
+    for (let i = 0; i &lt; NUM_SYMBOLS_TO_SHOW + 1; i++) {
+      const key: string = getRandomSymbol();
+      const symbol: PIXI.Sprite = new PIXI.Sprite(getImageData(key));
+      symbol.anchor.set(0.5);
+      this.symbolList.push(symbol);
+      symbol.x = symbol.height * 0.5;
+      symbol.y = i * symbol.height + symbol.height / 2;
+      this.addChild(symbol);
+    }
+  };
+
+  /**
+   * @param {number} delay - the delay before the reels begin to spin
+   */
+  private normalSpin = (delay: number) =&gt; {
+    var timeline = gsap.timeline();
+
+    timeline.to(this, {
+      yVel: SPIN_SPEED,
+      duration: SPIN_START,
+      delay,
+    });
+
+    timeline.to(this, {
+      duration: SPIN_DURATION,
+      onComplete: () =&gt; {
+        this.isSpinning = false;
+        this.symbolList = orderBy(this.symbolList, [&#x27;y&#x27;]);
+        this.symbolList.forEach((symbol, index) =&gt;
+          this.animateOut(symbol, index),
+        );
+      },
+    });
+  };
+
+  /**
+   * @param {number} delay - the delay before the reels begin to spin
+   */
+  private cascadeSpin = (delay: number) =&gt; {
+    var timeline = gsap.timeline();
+
+    timeline.to(this, {
+      delay,
+      onComplete: () =&gt; {
+        this.symbolList = orderBy(this.symbolList, [&#x27;y&#x27;]);
+        this.isSpinning = false;
+        this.symbolList.forEach((symbol, index) =&gt; {
+          gsap.to(symbol, {
+            duration: SPIN_END,
+            y: GAME_HEIGHT + SYMBOL_HEIGHT,
+            angle: _.random(-360, 360),
+            ease: Power1.easeInOut,
+            onComplete: () =&gt; {
+              symbol.y = -SYMBOL_HEIGHT;
+              this.animateOut(symbol, index);
+            },
+          });
+        });
+      },
+    });
+  };
+
+  /**
+   * @param {PIXI.Sprite} symbol - a reference to the symbol to animate
+   * @param {number} index - a reference to the symbol index within the symbolList array
+   */
+  private animateOut = (symbol: PIXI.Sprite, index: number) =&gt; {
+    let y = symbol.y + -this.symbolList[0].y + SYMBOL_HEIGHT * 0.5;
+    let delay = 0;
+    this.yVel = 0;
+
+    if (FEATURES.CASCADING_REELS) {
+      symbol.angle = _.random(-360, 360);
+      y = index * SYMBOL_HEIGHT + SYMBOL_HEIGHT * 0.5;
+      delay = (NUM_SYMBOLS_TO_SHOW - 1 - index) * 0.5;
+    }
+
+    const ease = FEATURES.CASCADING_REELS ? Power1.easeInOut : undefined;
+
+    const anim = gsap.to(symbol, {
+      duration: SPIN_END,
+      y,
+      rotation: 0,
+      delay,
+      ease,
+      onComplete: () =&gt; {
+        this.engine.audio.play(getRandomStopSound());
+        if (index === 0) {
+          anim.then(() =&gt; globalEvent.fire(EVENTS.SPIN_COMPLETE));
+        }
+      },
+    });
+  };
+
+  /**
+   * @param {PIXI.Sprite} symbol - a reference to the symbol to animate
+   */
+  private resetSymbol = (symbol: PIXI.Sprite) =&gt; {
+    if (FEATURES.CASCADING_REELS &amp;&amp; !this.isSpinning) {
+      symbol.y = -SYMBOL_HEIGHT * 2;
+    } else {
+      symbol.y -= NUM_SYMBOLS_TO_SHOW * SYMBOL_HEIGHT + symbol.height;
+    }
+
+    symbol.texture = getImageData(getRandomSymbol());
+  };
+
+  public update = () =&gt; {
+    this.symbolList.forEach((symbol: PIXI.Sprite) =&gt; {
+      if (!this.isSpinning &amp;&amp; symbol.y &lt;= -SYMBOL_HEIGHT) {
+      } else {
+        symbol.y += this.yVel;
+      }
+
+      if (
+        symbol.y &gt;
+        NUM_SYMBOLS_TO_SHOW * SYMBOL_HEIGHT + SYMBOL_HEIGHT * 0.5
+      ) {
+        this.resetSymbol(symbol);
+      }
+    });
+  };
+
+  /**
+   * @param {number} delay - the delay before the reels begin to spin
+   */
+  public startSpin = (delay: number) =&gt; {
+    this.engine.audio.play(&#x27;Start_Button&#x27;);
+    this.isSpinning = true;
+
+    if (FEATURES.CASCADING_REELS) {
+      this.cascadeSpin(delay);
+    } else {
+      this.normalSpin(delay);
+    }
+  };
+}
+</textarea><pre id="annotations" style="display:none">[]</pre></div>
+    <p class="footer-text">TypeScript Coverage Report generated by <a href="https://github.com/plantain-00/type-coverage">type-coverage</a> and <a href="https://github.com/alexcanessa/typescript-coverage-report">typescript-coverage-report</a> at Tue, 28 Dec 2021 00:18:32 GMT</p>
+    </body>
+  </html>
+  

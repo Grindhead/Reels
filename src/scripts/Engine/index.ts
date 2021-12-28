@@ -12,7 +12,7 @@ import {
 import ReelMask from '../Reel/ReelMask';
 import { globalEvent } from '@billjs/event-emitter';
 
-interface EngineParams {
+export interface EngineParams {
   /**
    * @param {string} containerId - The div id to render the canvas object into
    */
@@ -29,143 +29,135 @@ interface EngineParams {
   canvasH: number;
 }
 
-export default class Engine {
+export const Engine = {
   /**
    * @property {HTMLElement} container - The container {HTMLElement} of the canvas element
    */
-  container: HTMLElement;
+  container: <HTMLElement>{},
 
   /**
    * @property {PIXI.Loader} loader - A reference to the global {PIXI.Loader} object
    */
-  loader: PIXI.Loader;
+  loader: <PIXI.Loader>{},
 
   /**
    * @property {PIXI.Renderer} renderer - A reference to the {PIXI.Renderer} object
    */
-  renderer: PIXI.Renderer;
+  renderer: <PIXI.Renderer>{},
 
   /**
    * @property {PIXI.Container} stage - A reference to the top level display container
    */
-  stage: PIXI.Container;
-
-  /**
-   * @property {PIXI.Graphics} graphics - A reference to the top level graphics container
-   */
-  graphics: PIXI.Graphics;
+  stage: <PIXI.Container>{},
 
   /**
    * @property {Howl} audio - A reference to the audio library Howl
    */
-  audio!: Howl;
+  audio: <Howl>{},
 
   /**
    * @property {number} reelSpinCtr - A int for how many times the reels have spun
    */
-  reelSpinCtr: number = 0;
+  reelSpinCtr: 0,
 
   /**
-   * @property {UI} reelSpinCtr - A reference to the game UI object
+   * @property {UI} ui - A reference to the game UI object
    */
-  ui?: UI;
+  ui: <UI>{},
 
   /**
    * @property { Reel[]} reelList - An array that contains all the active reels
    */
-  reelList: Reel[] = [];
+  reelList: <Reel[]>[],
 
   /**
    * @constructor
    * @param {EngineParams} params - Parameters used by the Engine class
    */
-  constructor(params: EngineParams) {
-    this.loader = PIXI.Loader.shared;
+  init(params: EngineParams) {
+    Engine.loader = PIXI.Loader.shared;
 
-    this.renderer = PIXI.autoDetectRenderer({
+    Engine.renderer = PIXI.autoDetectRenderer({
       width: params.canvasW,
       height: params.canvasH,
       antialias: true,
     });
 
-    this.stage = new PIXI.Container();
-    this.graphics = new PIXI.Graphics();
+    Engine.stage = new PIXI.Container();
 
-    this.container = params.containerId
+    Engine.container = params.containerId
       ? document.getElementById(params.containerId) || document.body
       : document.body;
-    this.container.appendChild(this.renderer.view);
+    Engine.container.appendChild(Engine.renderer.view);
 
-    this.loadTextureAtlas();
-  }
+    Engine.loadTextureAtlas();
+  },
 
-  private loadTextureAtlas = () => {
-    this.loader.add('atlas', 'images/atlas.json');
-    this.loader.load(() => {
-      this.loadAudiosprite(AudioData, this.displayGame);
+  loadTextureAtlas: () => {
+    Engine.loader.add('atlas', 'images/atlas.json');
+    Engine.loader.load(() => {
+      Engine.loadAudiosprite(AudioData, Engine.displayGame);
     });
-  };
+  },
 
   /**
    * @param {Object} audiospriteData - a JSON file exported from Audiosprite that defines the Audiosprite file locations and markers within the files.
    * MP3, ogg, m4a and ac3 are normally loaded
    * @callback {HowlCallback} onLoad - a method to call once audio loading has been completed
    */
-  private loadAudiosprite = (audiospriteData: Object, onLoad: HowlCallback) => {
-    this.audio = new Howl(audiospriteData);
-    this.audio.once('load', onLoad);
-  };
+  loadAudiosprite: (audiospriteData: Object, onLoad: HowlCallback) => {
+    Engine.audio = new Howl(audiospriteData);
+    Engine.audio.once('load', onLoad);
+  },
 
-  private createUI = () => {
-    this.ui = new UI(this.stage);
+  createUI: () => {
+    Engine.ui = new UI();
 
-    globalEvent.on(EVENTS.SPIN_START, this.startSpin);
+    globalEvent.on(EVENTS.SPIN_START, Engine.startSpin);
+  },
 
-    this.stage.addChild(this.ui);
-  };
-
-  private createReels = () => {
+  createReels: () => {
     let reel;
 
     for (let i = 0; i < NUM_REELS; i++) {
-      reel = new Reel(this);
-      this.reelList.push(reel);
+      reel = new Reel();
+      Engine.reelList.push(reel);
       reel.x = i * reel.width;
-      this.stage.addChild(reel);
+      Engine.stage.addChild(reel);
     }
 
-    const scale: number = GAME_WIDTH / this.stage.width;
-    this.stage.scale.set(scale);
-    new ReelMask(scale * SYMBOL_HEIGHT, this.reelList);
-  };
+    const scale: number = GAME_WIDTH / Engine.stage.width;
+    Engine.stage.scale.set(scale);
+    new ReelMask(scale * SYMBOL_HEIGHT);
+  },
 
-  private displayGame = () => {
-    this.createReels();
-    this.createUI();
-  };
+  displayGame: () => {
+    Engine.createReels();
+    Engine.createUI();
+  },
 
-  update = () => {
-    this.reelList.forEach((reel: Reel) => {
+  update: () => {
+    Engine.reelList.forEach((reel: Reel) => {
       reel.update();
     });
-  };
+  },
 
-  startSpin = () => {
-    this.reelList.forEach((reel: Reel, index: number) => {
+  startSpin: () => {
+    Engine.reelList.forEach((reel: Reel, index: number) => {
       reel.startSpin(index * 0.1);
     });
 
-    globalEvent.on(EVENTS.SPIN_COMPLETE, this.spinComplete);
+    globalEvent.on(EVENTS.SPIN_COMPLETE, Engine.spinComplete);
 
-    this.reelSpinCtr = 0;
-  };
+    Engine.reelSpinCtr = 0;
+  },
 
-  private spinComplete = () => {
-    this.reelSpinCtr += 1;
-    if (this.reelSpinCtr === NUM_REELS) {
+  spinComplete: () => {
+    Engine.reelSpinCtr += 1;
+    if (Engine.reelSpinCtr === NUM_REELS) {
       globalEvent.offAll();
-      this.ui?.activate();
-      globalEvent.on(EVENTS.SPIN_START, this.startSpin);
+      Engine.ui?.activate();
+      globalEvent.on(EVENTS.SPIN_START, Engine.startSpin);
     }
-  };
-}
+  },
+};

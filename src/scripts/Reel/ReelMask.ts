@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Reel from '.';
+import { Engine } from '../Engine';
 import { GAME_WIDTH, NUM_SYMBOLS_TO_SHOW } from '../Utils/Constants';
 
 export default class ReelMask extends PIXI.Graphics {
@@ -8,7 +9,7 @@ export default class ReelMask extends PIXI.Graphics {
    * @param {number} height -the scaled height of each symbol
    * @param {Reel[]} reelList - an array of each reel to mask
    */
-  constructor(height: number = 0, reelList: Reel[] = []) {
+  constructor(height: number = 0) {
     super();
 
     this.beginFill(0xff0000);
@@ -16,7 +17,7 @@ export default class ReelMask extends PIXI.Graphics {
     this.endFill();
     this.cacheAsBitmap = true;
 
-    reelList.forEach((reel: Reel) => {
+    Engine.reelList.forEach((reel: Reel) => {
       reel.mask = this;
     });
   }
