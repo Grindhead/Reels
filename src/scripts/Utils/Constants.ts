@@ -21,6 +21,15 @@ export const FEATURES = {
 };
 
 export const EVENTS = {
+  /**
+   * emitted when a spin has started
+   * @event
+   */
   SPIN_START: 'spin-start',
+
+  /**
+   * emitted when a spin has ended
+   * @event
+   */
   SPIN_COMPLETE: 'spin-complete',
 };

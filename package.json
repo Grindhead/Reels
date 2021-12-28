@@ -1,13 +1,14 @@
 {
   "name": "pixi-reels",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "PIXI.JS Demo using reels for a slot game",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "serve": "webpack-dev-server --hot",
     "server": "yarn serve",
     "dev": "yarn serve",
-    "test": "mocha tests"
+    "test": "mocha tests",
+    "docs": "typedoc ./src/scripts/app.ts ./src/scripts/Engine/index.ts ./src/scripts/Reel/index.ts ./src/scripts/Reel/ReelMask.ts ./src/scripts/UI/index.ts ./src/scripts/Utils/Constants.ts ./src/scripts/Utils/Utils.ts --out docs && http-server docs -o"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
     "mocha": "^7.1.1",
     "mocha-loader": "^5.0.0",
     "ts-loader": "^6.2.2",
+    "typedoc": "^0.22.10",
     "typescript": "^4.5.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
