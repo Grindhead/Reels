@@ -46,6 +46,7 @@ export default class UI extends PIXI.Container {
     Engine.stage.addChild(this);
   }
 
+  /**  activate the UI to enable a new spin */
   public activate = () => {
     this.isEnabled = true;
     this.spinButton.interactive = true;
@@ -63,6 +64,7 @@ export default class UI extends PIXI.Container {
     }
   };
 
+  /**  disable the UI during a new spin */
   private disable = () => {
     this.isEnabled = false;
     this.spinButton.buttonMode = false;
@@ -70,6 +72,7 @@ export default class UI extends PIXI.Container {
   };
 
   /**
+   * create a new spin button
    * @return {PIXI.Sprite} - a new spin button with events applied
    */
   private createSpinButton = () => {
