@@ -9,7 +9,7 @@ import {
   NUM_REELS,
   SYMBOL_HEIGHT,
 } from '../Utils/Constants';
-import ReelMask from '../Reel/ReelMask';
+import { ReelMask } from '../Reel/ReelMask';
 import { globalEvent } from '@billjs/event-emitter';
 
 export interface EngineParams {
@@ -66,7 +66,7 @@ export const Engine = {
   ui: <UI>{},
 
   /**
-   * @property { Reel[]} reelList - An array that contains all the active reels
+   * @property {Reel[]} reelList - An array that contains all the active reels
    */
   reelList: <Reel[]>[],
 
@@ -128,7 +128,7 @@ export const Engine = {
 
     const scale: number = GAME_WIDTH / Engine.stage.width;
     Engine.stage.scale.set(scale);
-    new ReelMask(scale * SYMBOL_HEIGHT);
+    ReelMask.apply(scale * SYMBOL_HEIGHT);
   },
 
   displayGame: () => {

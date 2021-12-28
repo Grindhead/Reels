@@ -20,12 +20,10 @@ export default class UI extends PIXI.Container {
    * @param {boolean} isEnabled - Can the UI be used? Disabled if the reels are spinning
    */
   isEnabled: boolean = true;
-
   /**
    * @param {object} mousePos - Stores mouse pos. This will be deprecated
    */
   mousePos = { x: 0, y: 0 };
-
   /**
    * @constructor
    * @param {PIXI.Container} stage - a reference to the stage object
