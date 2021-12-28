@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Howl, HowlCallback } from 'howler';
 import * as AudioData from '../../sounds/audiosprite.json';
-import UI from '../UI';
+import { UI } from '../UI';
 import Reel from '../Reel';
 import {
   EVENTS,
@@ -63,7 +63,7 @@ export const Engine = {
   /**
    * @property {UI} ui - A reference to the game UI object
    */
-  ui: <UI>{},
+  ui: UI,
 
   /**
    * @property {Reel[]} reelList - An array that contains all the active reels
@@ -111,7 +111,7 @@ export const Engine = {
   },
 
   createUI: () => {
-    Engine.ui = new UI();
+    Engine.ui = UI.init();
 
     globalEvent.on(EVENTS.SPIN_START, Engine.startSpin);
   },

@@ -10,30 +10,28 @@ import { getImageData } from '../Utils/Utils';
 import { globalEvent } from '@billjs/event-emitter';
 import { Engine } from '../Engine';
 
-export default class UI extends PIXI.Container {
+export const UI = {
   /**
    * @param {PIXI.Sprite} spinButton - A reference to the spin button
    */
-  spinButton: PIXI.Sprite;
+  spinButton: <PIXI.Sprite>{},
 
   /**
    * @param {boolean} isEnabled - Can the UI be used? Disabled if the reels are spinning
    */
-  isEnabled: boolean = true;
+  isEnabled: true,
   /**
    * @param {object} mousePos - Stores mouse pos. This will be deprecated
    */
-  mousePos = { x: 0, y: 0 };
+  mousePos: { x: 0, y: 0 },
   /**
-   * @constructor
-   * @param {PIXI.Container} stage - a reference to the stage object
+   * create the UI
+   * @return {UI}
    */
-  constructor() {
-    super();
+  init() {
+    UI.spinButton = this.createSpinButton();
 
-    this.spinButton = this.createSpinButton();
-
-    this.activate();
+    UI.activate();
 
     Engine.stage.interactive = true;
     Engine.stage.on('pointermove', (e: any) => {
@@ -41,44 +39,44 @@ export default class UI extends PIXI.Container {
       this.mousePos.y = e.data.global.y;
     });
 
-    Engine.stage.addChild(this);
-  }
+    Engine.stage.addChild(UI.spinButton);
+
+    return this;
+  },
 
   /**  activate the UI to enable a new spin */
-  public activate = () => {
-    this.isEnabled = true;
-    this.spinButton.interactive = true;
-    this.spinButton.buttonMode = true;
-    this.spinButton.texture = getImageData('ui/btn_spin_normal.png');
+  activate: () => {
+    UI.isEnabled = true;
+    UI.spinButton.interactive = true;
+    UI.spinButton.buttonMode = true;
+    UI.spinButton.texture = getImageData('ui/btn_spin_normal.png');
 
     // This is dirty and disgusting and will get updated
     if (
-      this.mousePos.x >= 841 &&
-      this.mousePos.x <= 1020 &&
-      this.mousePos.y >= 605 &&
-      this.mousePos.y <= 770
+      UI.mousePos.x >= 841 &&
+      UI.mousePos.x <= 1020 &&
+      UI.mousePos.y >= 605 &&
+      UI.mousePos.y <= 770
     ) {
-      this.spinButton.texture = getImageData('ui/btn_spin_hover.png');
+      UI.spinButton.texture = getImageData('ui/btn_spin_hover.png');
     }
-  };
+  },
 
   /**  disable the UI during a new spin */
-  private disable = () => {
-    this.isEnabled = false;
-    this.spinButton.buttonMode = false;
-    this.spinButton.interactive = false;
-  };
+  disable: () => {
+    UI.isEnabled = false;
+    UI.spinButton.buttonMode = false;
+    UI.spinButton.interactive = false;
+  },
 
   /**
    * create a new spin button
    * @return {PIXI.Sprite} - a new spin button with events applied
    */
-  private createSpinButton = () => {
+  createSpinButton: () => {
     const button: PIXI.Sprite = new PIXI.Sprite(
       getImageData('ui/btn_spin_normal.png'),
     );
-
-    this.addChild(button);
 
     button.on('pointerdown', () => {
       button.texture = getImageData('ui/btn_spin_pressed.png');
@@ -86,7 +84,7 @@ export default class UI extends PIXI.Container {
 
     button.on('pointerup', () => {
       button.texture = getImageData('ui/btn_spin_disabled.png');
-      this.disable();
+      UI.disable();
 
       globalEvent.fire(EVENTS.SPIN_START);
     });
@@ -105,5 +103,5 @@ export default class UI extends PIXI.Container {
     button.y = NUM_SYMBOLS_TO_SHOW * SYMBOL_HEIGHT + padding;
 
     return button;
-  };
-}
+  },
+};
