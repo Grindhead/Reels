@@ -40,6 +40,9 @@ export default class Reel extends PIXI.Container {
     this.createSymbols();
   }
 
+  /**
+   * create all the symbols we need
+   */
   private createSymbols = () => {
     for (let i = 0; i < NUM_SYMBOLS_TO_SHOW + 1; i++) {
       const key: string = getRandomSymbol();
@@ -53,6 +56,7 @@ export default class Reel extends PIXI.Container {
   };
 
   /**
+   * perform a normal spin animation
    * @param {number} delay - the delay before the reels begin to spin
    */
   private normalSpin = (delay: number) => {
@@ -77,6 +81,7 @@ export default class Reel extends PIXI.Container {
   };
 
   /**
+   * perform a cascade spin animation
    * @param {number} delay - the delay before the reels begin to spin
    */
   private cascadeSpin = (delay: number) => {
@@ -104,6 +109,7 @@ export default class Reel extends PIXI.Container {
   };
 
   /**
+   * animate the symbol out of the screen. When complete, fire EVENTS.SPIN_COMPLETE
    * @param {PIXI.Sprite} symbol - a reference to the symbol to animate
    * @param {number} index - a reference to the symbol index within the symbolList array
    */
@@ -136,6 +142,7 @@ export default class Reel extends PIXI.Container {
   };
 
   /**
+   * reset a symbol position to the top of the screen, and choose a new symbol asset from the texture atlas
    * @param {PIXI.Sprite} symbol - a reference to the symbol to animate
    */
   private resetSymbol = (symbol: PIXI.Sprite) => {
@@ -148,6 +155,9 @@ export default class Reel extends PIXI.Container {
     symbol.texture = getImageData(getRandomSymbol());
   };
 
+  /**
+   * update the symbols within this reel each frame
+   */
   public update = () => {
     this.symbolList.forEach((symbol: PIXI.Sprite) => {
       if (!this.isSpinning && symbol.y <= -SYMBOL_HEIGHT) {
@@ -165,6 +175,7 @@ export default class Reel extends PIXI.Container {
   };
 
   /**
+   * start a spin beginning with a delay
    * @param {number} delay - the delay before the reels begin to spin
    */
   public startSpin = (delay: number) => {
