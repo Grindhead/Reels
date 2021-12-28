@@ -15,7 +15,6 @@ export const UI = {
    * @param {PIXI.Sprite} spinButton - A reference to the spin button
    */
   spinButton: <PIXI.Sprite>{},
-
   /**
    * @param {boolean} isEnabled - Can the UI be used? Disabled if the reels are spinning
    */

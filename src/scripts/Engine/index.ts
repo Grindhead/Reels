@@ -71,7 +71,7 @@ export const Engine = {
   reelList: <Reel[]>[],
 
   /**
-   * @constructor
+   * start the game and begin loading assets
    * @param {EngineParams} params - Parameters used by the Engine class
    */
   init(params: EngineParams) {
@@ -93,6 +93,9 @@ export const Engine = {
     Engine.loadTextureAtlas();
   },
 
+  /**
+   * load the games' texture atlas
+   */
   loadTextureAtlas: () => {
     Engine.loader.add('atlas', 'images/atlas.json');
     Engine.loader.load(() => {
@@ -110,12 +113,18 @@ export const Engine = {
     Engine.audio.once('load', onLoad);
   },
 
+  /**
+   *create the {UI} singleton object
+   */
   createUI: () => {
     Engine.ui = UI.init();
 
     globalEvent.on(EVENTS.SPIN_START, Engine.startSpin);
   },
 
+  /**
+   * create all the reels
+   */
   createReels: () => {
     let reel;
 
@@ -131,17 +140,26 @@ export const Engine = {
     ReelMask.apply(scale * SYMBOL_HEIGHT);
   },
 
+  /**
+   * display the game
+   */
   displayGame: () => {
     Engine.createReels();
     Engine.createUI();
   },
 
+  /**
+   * update the game each frame TODO: add a time delta
+   */
   update: () => {
     Engine.reelList.forEach((reel: Reel) => {
       reel.update();
     });
   },
 
+  /**
+   * start the reel animation
+   */
   startSpin: () => {
     Engine.reelList.forEach((reel: Reel, index: number) => {
       reel.startSpin(index * 0.1);
@@ -152,6 +170,9 @@ export const Engine = {
     Engine.reelSpinCtr = 0;
   },
 
+  /**
+   * handle each reel finishing the animation
+   */
   spinComplete: () => {
     Engine.reelSpinCtr += 1;
     if (Engine.reelSpinCtr === NUM_REELS) {
