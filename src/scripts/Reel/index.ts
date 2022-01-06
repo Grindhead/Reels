@@ -115,17 +115,17 @@ export default class Reel extends PIXI.Container {
    */
   private animateOut = (symbol: PIXI.Sprite, index: number) => {
     let y = symbol.y + -this.symbolList[0].y + SYMBOL_HEIGHT * 0.5;
-    let delay = 0;
+    let delay = 1;
     this.yVel = 0;
 
     if (FEATURES.CASCADING_REELS) {
       symbol.angle = _.random(-360, 360);
       y = index * SYMBOL_HEIGHT + SYMBOL_HEIGHT * 0.5;
-      delay = (NUM_SYMBOLS_TO_SHOW - 1 - index) * 0.5;
+      // delay for each cascade
+      delay = (NUM_SYMBOLS_TO_SHOW - index) * 1;
     }
 
     const ease = FEATURES.CASCADING_REELS ? Power1.easeInOut : undefined;
-
     const anim = gsap.to(symbol, {
       duration: SPIN_END,
       y,
