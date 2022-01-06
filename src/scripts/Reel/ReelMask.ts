@@ -14,7 +14,7 @@ export const ReelMask = {
     const mask = new PIXI.Graphics();
 
     mask.beginFill(0xff0000);
-    mask.drawRect(0, 0, GAME_WIDTH, height * NUM_SYMBOLS_TO_SHOW);
+    mask.drawRect(0, 0, GAME_WIDTH, height * NUM_SYMBOLS_TO_SHOW - 2);
     mask.endFill();
     mask.cacheAsBitmap = true;
 
