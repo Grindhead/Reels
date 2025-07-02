@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { Howl, HowlCallback } from 'howler';
+import { Howl, HowlCallback, HowlOptions } from 'howler';
 import * as AudioData from '../../sounds/audiosprite.json';
 import { UI } from '../UI';
 import Reel from '../Reel';
@@ -109,7 +109,7 @@ export const Engine = {
    * @callback {HowlCallback} onLoad - a method to call once audio loading has been completed
    */
   loadAudiosprite: (audiospriteData: Object, onLoad: HowlCallback) => {
-    Engine.audio = new Howl(audiospriteData);
+    Engine.audio = new Howl(audiospriteData as HowlOptions);
     Engine.audio.once('load', onLoad);
   },
 

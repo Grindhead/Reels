@@ -24,15 +24,17 @@ const config = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyPlugin([
-      { from: 'src/index.html' },
-      { from: 'src/css/', to: 'css/' },
-      { from: 'src/images/', to: 'images/' },
-      { from: 'src/sounds/', to: 'sounds/' },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        { from: 'src/index.html' },
+        { from: 'src/css/', to: 'css/' },
+        { from: 'src/images/', to: 'images/' },
+        { from: 'src/sounds/', to: 'sounds/' },
+      ],
+    }),
   ],
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: path.join(__dirname, 'dist'),
     compress: true,
     port: 8080,
     hot: true,
