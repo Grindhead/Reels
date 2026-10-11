@@ -9,12 +9,15 @@ window.onload = () => {
     canvasH: GAME_HEIGHT,
   });
 
-  const render = () => {
+  let previousTime: number | undefined;
+  const render = (time: number) => {
+    const deltaSeconds = previousTime === undefined ? 0 : (time - previousTime) / 1000;
+    previousTime = time;
     requestAnimationFrame(render);
     if (FEATURES.SHOW_STATS) {
       stats.begin();
     }
-    Engine.update();
+    Engine.update(deltaSeconds);
     Engine.renderer.render(Engine.stage);
     if (FEATURES.SHOW_STATS) {
       stats.end();
@@ -25,7 +28,7 @@ window.onload = () => {
     showStats();
   }
 
-  render();
+  requestAnimationFrame(render);
 };
 
 const stats = new Stats();

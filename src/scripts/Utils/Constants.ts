@@ -54,11 +54,11 @@ export const FEATURES = {
   /**
    * should the game feature cascading reels
    */
-  CASCADING_REELS: 'true',
+  CASCADING_REELS: true,
   /**
    * should the game show stats. These are MrD00b stats - https://github.com/mrdoob/stats.js/
    */
-  SHOW_STATS: 'true',
+  SHOW_STATS: true,
 } as const;
 /**
  * supported events
