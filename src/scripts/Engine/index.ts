@@ -149,11 +149,11 @@ export const Engine = {
   },
 
   /**
-   * update the game each frame TODO: add a time delta
+   * update the game each frame using elapsed seconds
    */
-  update: () => {
+  update: (deltaSeconds: number) => {
     Engine.reelList.forEach((reel: Reel) => {
-      reel.update();
+      reel.update(deltaSeconds);
     });
   },
 

@@ -158,11 +158,12 @@ export default class Reel extends PIXI.Container {
   /**
    * update the symbols within this reel each frame
    */
-  public update = () => {
+  public update = (deltaSeconds: number) => {
+    const elapsed = Number.isFinite(deltaSeconds) ? Math.max(0, Math.min(deltaSeconds, 0.1)) : 0;
     this.symbolList.forEach((symbol: PIXI.Sprite) => {
       if (!this.isSpinning && symbol.y <= -SYMBOL_HEIGHT) {
       } else {
-        symbol.y += this.yVel;
+        symbol.y += this.yVel * elapsed;
       }
 
       if (
